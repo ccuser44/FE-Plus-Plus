@@ -143,7 +143,8 @@ Players.PlayerAdded:Connect(function(player)
 			table.insert(connections, connection)
 		end
 
-		local rootJoint = humanoid.RigType == Enum.HumanoidRigType.R15 and character:WaitForChild("LowerTorso"):WaitForChild("Root") or humanoid.RigType == Enum.HumanoidRigType.R6 and character:WaitForChild("HumanoidRootPart"):WaitForChild("RootJoint")
+		local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+		local rootJoint = humanoid.RigType == Enum.HumanoidRigType.R15 and character:WaitForChild("LowerTorso"):WaitForChild("Root") or humanoid.RigType == Enum.HumanoidRigType.R6 and (humanoidRootPart:FindFirstChild("Root Hip") or humanoidRootPart:WaitForChild("RootJoint"))
 
 		makeConnection(rootJoint.AncestryChanged)
 
