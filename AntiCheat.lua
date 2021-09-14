@@ -95,7 +95,7 @@ Players.PlayerAdded:Connect(function(player)
 			end
 		end)
 
-		do
+		if Players.CharacterAutoLoads then
 			local connection
 
 			connection = humanoid.Died:Connect(function()
@@ -122,10 +122,6 @@ Players.PlayerAdded:Connect(function(player)
 			end
 		end)
 
-
-		if not Players.CharacterAutoLoads then
-			return
-		end
 
 		local connections = {}
 		local function makeConnection(Conn)
