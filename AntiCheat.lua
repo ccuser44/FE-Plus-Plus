@@ -123,6 +123,10 @@ Players.PlayerAdded:Connect(function(player)
 		end)
 
 
+		if not Players.CharacterAutoLoads then
+			return
+		end
+
 		local connections = {}
 		local function makeConnection(Conn)
 			local connection
