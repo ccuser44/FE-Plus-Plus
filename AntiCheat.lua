@@ -1,11 +1,5 @@
 local Players = game:GetService("Players")
 
--- // If your game has admin commands which require noclipping, set this to false.
-local preventStrafingNoPhysics = true
-
-
-
--- // Do not touch the code below unless you known what you are doing!
 
 local function protectHat(hat)
 	local handle = hat:WaitForChild("Handle", 30)
@@ -89,8 +83,6 @@ Players.PlayerAdded:Connect(function(player)
 
 		humanoid.StateChanged:Connect(function(last, state)
 			if last == Enum.HumanoidStateType.Dead and state ~= Enum.HumanoidStateType.Dead then
-				killHumanoid(humanoid)
-			elseif preventStrafingNoPhysics and state == Enum.HumanoidStateType.StrafingNoPhysics then
 				killHumanoid(humanoid)
 			end
 		end)
