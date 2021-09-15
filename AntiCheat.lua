@@ -59,7 +59,7 @@ Players.PlayerAdded:Connect(function(player)
 
 				task.defer(function()
 					for _, v in ipairs(character:GetChildren()) do
-						if v:IsA("Tool") then
+						if v:IsA("BackpackItem") then
 							count += 1
 							if count > 1 then
 								v.Parent = player:FindFirstChildOfClass("Backpack") or Instance.new("Backpack", player)
