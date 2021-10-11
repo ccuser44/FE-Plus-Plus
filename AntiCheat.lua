@@ -43,8 +43,8 @@ local function killHumanoid(humanoid)
 	end
 end
 
-Players.PlayerAdded:Connect(function(player)
-	player.CharacterAdded:Connect(function(character)
+local function onPlayerAdded(player)
+	local function onCharacterAdded(character)
 		for _, v in ipairs(character:GetChildren()) do
 			if v:IsA("Accoutrement") then
 				coroutine.wrap(protectHat)(v)
@@ -114,7 +114,6 @@ Players.PlayerAdded:Connect(function(player)
 			end
 		end)
 
-
 		local connections = {}
 		local function makeConnection(Conn)
 			local connection
@@ -143,5 +142,17 @@ Players.PlayerAdded:Connect(function(player)
 		if humanoid.RigType == Enum.HumanoidRigType.R15 then
 			makeConnection(character:WaitForChild("UpperTorso"):WaitForChild("Waist").AncestryChanged)
 		end
-	end)
-end)
+	end
+
+	if player.Character then
+		coroutine.wrap(onCharacterAdded)(player.Character)
+	end
+
+	player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+for _, v in ipairs(Players:GetPlayers()) do
+	coroutine.wrap(onPlayerAdded)(v)
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
