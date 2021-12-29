@@ -2,9 +2,9 @@ local Players = game:GetService("Players")
 
 
 -- // If you want to use a whitelist mode for animations instead of a blacklist.
-local useWhitelist = false
+local USE_WHITELIST = false
 -- // If you want to whitelist / blacklist an animation enter it here.
-local animationsList = {}
+local ANIMATIONS_LIST = {}
 
 
 local function protectHat(hat)
@@ -46,7 +46,7 @@ local function protectHat(hat)
 
 			mesh.AncestryChanged:Connect(function(child, parent)
 				task.defer(function()
-					if child == mesh and handle and (not parent or not handle:IsAncestorOf(mesh)) then
+					if child == mesh and handle and (not parent or not handle:IsAncestorOf(mesh)) and hat and hat.Parent then
 						mesh.Parent = handle
 					end
 				end)
@@ -139,7 +139,7 @@ local function onPlayerAdded(player)
 
 				task.wait(Players.RespawnTime + 1.5)
 
-				if workspace:IsAncestorOf(humanoid) then
+				if humanoid and workspace:IsAncestorOf(humanoid) then
 					player:LoadCharacter()
 				end
 			end)
@@ -152,23 +152,26 @@ local function onPlayerAdded(player)
 
 
 			A player can play any animation that is a. owned by Roblox or b. made by the game creator.
-			This can be exploited bu a hacker, to for example play an inappropriate animation.
+			This can be exploited by a hacker, to for example play an inappropriate animation.
 
 			It is hardlocked to prevent an inappropriate animation (rbxassetid://148840371).
-			You can also ass animations to blacklist/whitelist to the animationsList table.
+			You can also add animations to blacklist/whitelist to the animationsList table.
 			If you set whitelistAnimsIndeadOfBlacklist to true it will use a whitelist mode,
 			meaning only the animations in the table are allowed, else it only prevents the
 			animations in the list.
+			NOTE: The animation may still appear on the client, but it never appears on the server or other players!
 		]]
 		animator.AnimationPlayed:Connect(function(animationTrack)
 			local animationId = string.lower(string.gsub(animationTrack.Animation.AnimationId, "%s", ""))
 			if 
 				animationId == "rbxassetid://148840371" or
 				string.match(animationId, "[%d%l]+://[/%w%p%?=%-_%$&'%*%+%%]*148840371/*") or
-				useWhitelist and not table.find(animationsList, animationId) or
-				not useWhitelist and table.find(animationsList, animationId)
+				USE_WHITELIST and not table.find(ANIMATIONS_LIST, animationId) or
+				not USE_WHITELIST and table.find(ANIMATIONS_LIST, animationId)
 			then
-				killHumanoid(humanoid)
+				task.defer(function()
+					animationTrack:Stop(1/60)
+				end)
 			end
 		end)
 
@@ -176,17 +179,19 @@ local function onPlayerAdded(player)
 		local function makeConnection(Conn)
 			local connection
 			connection = Conn:Connect(function(_, parent)
-				if not connection.Connected or parent then
-					return
-				end
+				task.defer(function()
+					if not connection.Connected or parent or humanoid and not humanoid.RequiresNeck then
+						return
+					end
 
-				for _, v in ipairs(connections) do
-					v:Disconnect()
-				end
+					for _, v in ipairs(connections) do
+						v:Disconnect()
+					end
 
-				if humanoid then
-					killHumanoid(humanoid)
-				end
+					if humanoid and not (humanoid.Health <= 0) then
+						killHumanoid(humanoid)
+					end
+				end)
 			end)
 
 			table.insert(connections, connection)
