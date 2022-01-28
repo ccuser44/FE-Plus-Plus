@@ -155,8 +155,8 @@ local function onPlayerAdded(player)
 			This can be exploited by a hacker, to for example play an inappropriate animation.
 
 			It is hardlocked to prevent an inappropriate animation (rbxassetid://148840371).
-			You can also add animations to blacklist/whitelist to the animationsList table.
-			If you set whitelistAnimsIndeadOfBlacklist to true it will use a whitelist mode,
+			You can also add animations to blacklist/whitelist to the ANIMATIONS_LIST table.
+			If you set USE_WHITELIST to true it will use a whitelist mode,
 			meaning only the animations in the table are allowed, else it only prevents the
 			animations in the list.
 			NOTE: The animation may still appear on the client, but it never appears on the server or other players!
@@ -216,7 +216,7 @@ local function onPlayerAdded(player)
 	end
 
 	if player.Character then
-		coroutine.wrap(onCharacterAdded)(player.Character)
+		task.spawn(onCharacterAdded, player.Character)
 	end
 
 	player.CharacterAdded:Connect(onCharacterAdded)
@@ -224,7 +224,7 @@ end
 
 
 for _, v in ipairs(Players:GetPlayers()) do
-	coroutine.wrap(onPlayerAdded)(v)
+	task.spawn(onPlayerAdded, v)
 end
 
 Players.PlayerAdded:Connect(onPlayerAdded)
