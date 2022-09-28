@@ -198,7 +198,7 @@ local function onPlayerAdded(player)
 		end
 
 		--[[
-			This code prevents the abusing of deleting the rootjoint and/or waisjoint.
+			This code prevents the abusing of deleting the rootjoint and/or waistjoint.
 
 			When you delete the neckjoint the character dies, this however does not apply
 			for the rootjoint and the waistjoint. Meaning hackers can abuse this to detach
